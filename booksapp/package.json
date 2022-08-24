@@ -6,7 +6,7 @@
     "dev": "node ./bin/www",
     "start": "ts-node-dev --respawn ./bin/www",
     "watch2": "nodemon -e ejs ./bin/www --ignore public",
-    "watch": "nodemon -e ejs ./bin/www",
+    "watch": "nodemon ./bin/www",
     "compile": "tsc -w",
     "build": "rimraf dist && tsc"
   },

@@ -19,7 +19,6 @@ router.get('/signup', (req, res) => {
     res.render('signup', { title: 'signup' });
 });
 router.get('/login', (req, res) => {
-    console.log(req.cookies.authorized);
     if (req.cookies.authorized) {
         return res.redirect('/admin');
     }

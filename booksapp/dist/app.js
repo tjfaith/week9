@@ -20,7 +20,7 @@ const viewsRoute_1 = __importDefault(require("./routes/viewsRoute"));
 const book_1 = __importDefault(require("./routes/book"));
 const authors_1 = __importDefault(require("./routes/authors"));
 // {force:true}
-database_config_1.default.sync({ force: true }).then(() => {
+database_config_1.default.sync().then(() => {
     console.log('Database Connected Successfully');
 }).catch(error => {
     console.log(error);

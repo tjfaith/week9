@@ -20,7 +20,7 @@ import bookRouter from "./routes/book";
 import authorRouter from "./routes/authors";
 // {force:true}
 
-db.sync({force:true}).then(()=>{
+db.sync().then(()=>{
   console.log('Database Connected Successfully');
 }).catch(error=>{
   console.log(error);
