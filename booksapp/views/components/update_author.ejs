@@ -1,0 +1,86 @@
+<div class="modal fade" id="updateData" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    role="dialog" aria-labelledby="updateData" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="updateDataTitle">Update Data</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="author_form">
+            <div class="form-group">
+              <label for="Name">Author's Name</label>
+              <input type="text" class="form-control" name="author" value="<%= data.author %>" required />
+            </div>
+
+            <div class="form-group">
+              <label for="Name">Author's Icon</label>
+              <input type="url" class="form-control" name="author_icon" value="<%= data.author_icon %>" required />
+            </div>
+
+            <div class="form-group">
+              <label for="Age">Age</label>
+              <input type="number" class="form-control" id="bookIcon" name="age"  value="<%= data.age %>" required />
+            
+            </div>
+
+            <div class="form-group">
+                <label for="Email">Email</label>
+                <input type="email" class="form-control" id="bookIcon" name="email"  value="<%= data.email %>" required />
+                
+              </div>
+
+              <div class="form-group">
+                <label for="address"></label>
+                <textarea class="form-control" id="address" name="address" rows="3" required><%= data.address %></textarea>
+                <small id="emailHelp" class="form-text text-muted">Input your address</small>
+              </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+
+const author_form = document.getElementById("author_form");
+
+// ADD NEW BOOK
+author_form.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const form_data = {
+          author: author_form.author.value,
+          author_icon: author_form.author_icon.value,
+          age: author_form.age.value,
+          email: author_form.email.value,
+          address: author_form.address.value,
+        };
+   
+        axios({
+              method: "PUT",
+              url: 'author/update',
+              data: JSON.stringify(form_data),
+              headers: { "Content-Type": "application/json" },
+            })
+              .then((response) => {
+                console.log(response);
+                if (response.data.message){
+                  alert(response.data.message)
+                  location.reload()
+                }
+              })
+              .catch((err) => {
+                console.log(err);
+                // console.log(err.response.data.message);
+                // login_error.innerHTML = err.response.data.message;
+              });
+  
+});
+
+       
+</script>

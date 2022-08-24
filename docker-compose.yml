@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  booksapp:
+    build: ./booksapp 
+    container_name: booksapp
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./booksapp:/app
+      - ./app/node_modules

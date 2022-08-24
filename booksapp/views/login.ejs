@@ -1,0 +1,115 @@
+<%- include('./layout/header.ejs') %>
+
+<section class="vh-100">
+  <div class="container-fluid h-custom">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-md-9 col-lg-6 col-xl-5">
+        <img
+          src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
+          class="img-fluid"
+          alt="Sample image"
+        />
+      </div>
+
+      <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+        <div id="login_error" class="text-center mb-2 text-danger"> </div>
+        <form id="login_form" >
+          <!-- Email input -->
+          <div class="form-outline mb-4">
+            <input
+              type="email"
+              class="form-control form-control-lg"
+              placeholder="Enter a valid email address"
+              name="email"
+              required
+            />
+            <label class="form-label" for="form3Example3">Email address</label>
+          </div>
+
+          <!-- Password input -->
+          <div class="form-outline mb-3">
+            <input
+              type="password" 
+              class="form-control form-control-lg"
+              placeholder="Enter password"
+              name="password"
+              required
+            />
+            <label class="form-label" for="form3Example4">Password</label>
+          </div>
+
+          <div class="text-center text-lg-start mt-4 pt-2">
+            <button
+              type="submit"
+              class="btn btn-primary btn-lg"
+              style="padding-left: 2.5rem; padding-right: 2.5rem"
+            >
+              Login
+            </button>
+            <p class="small fw-bold mt-2 pt-1 mb-0">
+              Don't have an account?
+              <a href="/signup" class="link-danger">Register</a>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section> 
+
+<%- include('./layout/footer') %>
+
+
+<!-- SCRIPT ================================== -->
+<script>
+    const login_form = document.querySelector("#login_form")
+    const login_error = document.querySelector('#login_error')
+    login_form.addEventListener('submit', async(e)=>{
+    e.preventDefault()
+    // const fd = new FormData()
+    const form_data = {
+        email: login_form.email.value,
+        password: login_form.password.value,
+    }
+    // try {
+    //     const res = await fetch('/author/login',{
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json'
+    //         },
+    //         body: JSON.stringify(form_data)
+    //     })
+    //     const data = await res.json()
+    //     login_error.innerHTML = data.message
+
+    //     console.log(data.message);
+    //     if(data.message="Login successful"){
+    //         window.location.href = "/dashboard"
+    //     }else{
+
+    //     }
+    // } catch (error) {
+    //     console.log(error); 
+    // }
+
+    // localStorage.setItem('lastname','Smith');
+    // alert(localStorage.getItem('lastname'));
+
+    axios({
+        method: 'post',
+        url: '/author/login',
+        data: JSON.stringify(form_data),
+        headers: {'Content-Type': 'application/json',}
+    }).then(response=>{
+        if(response.data.message="Login successful"){
+            window.location.href = "/admin"
+        }else{
+            login_error.innerHTML = response.data.message
+        }
+    }).catch(err=>{
+        console.log(err.response.data.message);
+        login_error.innerHTML = err.response.data.message
+    })
+
+})
+</script>

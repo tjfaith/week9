@@ -1,0 +1,52 @@
+<%- include('./layout/header.ejs') %>
+
+<!-- Header -->
+<header class="bg-dark py-5">
+  <div class="container px-4 px-lg-5 my-5">
+    <div class="text-center text-white">
+      <h1 class="display-4 fw-bolder">Welcome to Book Store</h1>
+      <p class="lead fw-normal text-white-50 mb-0">Read and Create books</p>
+    </div>
+  </div>  
+</header>  
+
+<!-- Section-->
+<section class="py-5">
+  <div class="container">
+    <div class="justify-content-center">
+      <div class="mb-5 w-100 d-flex row flex-wrap">
+        <% if (data.length >0){ data.forEach(data => { %>
+         
+
+          <a href="/books/<%= data.id %>" class="col-md-3 mb-2 d-flex">
+          <div class="card card-body flex-fill p-0">
+           
+              <img
+                class="card-img-top bookIcon h-100 w-100 img-fluid"
+                src="<%= data.icon %>"
+                alt="..."
+              />
+            <div class="card-body p-2">
+                  <h5 class="fw-bolder text-center"><%= data.name %></h5>
+                  <hr>
+                  <div class="text-justify"> 
+                  <small class="text-secondary">Author:<%= data.author.author %></small><br>
+                  <small class="text-secondary">Serial Number: <%= data.serialNumber %></small><br>
+                  <small>Date published:<%= new Date(data.datePublished).toLocaleDateString() ;  %></small>
+               </div>
+            
+            </div>
+          </div>
+        </a>
+
+               <% 
+         })
+       }else{ %>
+        <h2>NO BOOK TO DISPLAY</h2>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('./layout/footer') %>

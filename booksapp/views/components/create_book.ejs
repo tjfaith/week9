@@ -1,0 +1,84 @@
+<div class="modal fade" id="exampleModalCenter" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:80%" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Add New Book</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="book_form">
+            <div class="form-group">
+              <label for="bookName">Book Name</label>
+              <input type="name" class="form-control" name="name" required />
+              <small class="form-text text-muted">Input book title</small>
+            </div>
+
+            <div class="form-group">
+              <label for="bookIcon">Book Image</label>
+              <input type="url" class="form-control" id="bookIcon" name="icon" required />
+              <small id="emailHelp" class="form-text text-muted">Input Book image url</small>
+            </div>
+
+            <div class="form-group">
+              <label for="bookIcon">Book Published?</label>
+
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="isPublished" value="true" required />
+                <label class="form-check-label" for="inlineRadio1">Yes</label>
+              </div>
+
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="isPublished" value="false" required />
+                <label class="form-check-label" for="inlineRadio2">No</label>
+              </div>
+
+              <div class="form-group">
+                <label for="serialNumber">Serial Number</label>
+                <input type="number" class="form-control" id="serialNumber" name="serialNumber" required />
+                <small id="emailHelp" class="form-text text-muted">Input book serial number</small>
+              </div>
+
+              <div class="form-group">
+                <label for="bookLink">Download Link</label>
+                <input type="url" class="form-control" id="bookLink" name="bookLink" required />
+                <small id="emailHelp" class="form-text text-muted">Input link to download book</small>
+              </div>
+
+              <div class="form-group">
+                <label for="bookIcon">Book Summary</label>
+                <textarea name="createBookSummary"   id="" cols="30" rows="10"> </textarea>
+              </div>
+
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+  <script>
+const book_form = document.getElementById("book_form");
+
+// ADD NEW BOOK
+book_form.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const form_data = {
+          name: book_form.name.value,
+          icon: book_form.icon.value,
+          isPublished: book_form.isPublished.value,
+          bookSummary: CKEDITOR.instances.createBookSummary.getData(),
+          serialNumber: book_form.serialNumber.value,
+          bookLink: book_form.bookLink.value,
+        };
+   
+  let newBook = reqFunction('POST', 'books/create', form_data)
+  
+});
+  </script>

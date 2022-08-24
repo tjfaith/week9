@@ -1,0 +1,122 @@
+<%- include('../layout/header.ejs') %>
+  <style>
+    .dashboard {
+      background-color: #f5f5f5;
+      padding: 0 0 8rem 0;
+    }
+  </style>
+
+  <div class="d-flex">
+    <div class="d-flex flex-column flex-shrink-0 p-3 bg-light vh-100" style="width: 280px">
+      <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+        <svg class="bi me-2" width="40" height="32">
+          <use xlink:href="#bootstrap" />
+        </svg>
+
+        <div class="dropdown">
+          <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle"
+            id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="https://github.com/mdo.png" alt="" width="80" height="80" class="rounded-circle me-2" />
+            <strong>
+              <%= data.author %>
+            </strong>
+          </a>
+          <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+            <!-- <li><a class="dropdown-item" href="#">New project...</a></li> -->
+            <!-- <li><a class="dropdown-item" href="#">Settings</a></li> -->
+            <li><a class="dropdown-item" href="#">Update Data</a></li>
+            <li>
+              <hr class="dropdown-divider" />
+            </li>
+            <li><a class="dropdown-item" href="#" id="logout">Logout</a></li>
+          </ul>
+        </div>
+      </a>
+      <hr />
+      <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item">
+          <a href="#" class="nav-link active" aria-current="page">
+            <svg class="bi me-2" width="16" height="16">
+              <use xlink:href="#home" />
+            </svg>
+            My Books
+          </a>
+        </li>
+        <li>
+          <a href="" id="addBook" class="nav-link link-dark" data-toggle="modal" data-target="#exampleModalCenter">
+            <svg class="bi me-2" width="16" height="16">
+              <use xlink:href="#speedometer2" />
+            </svg>
+            Add new book +
+          </a>
+        </li>
+      </ul>
+      <hr />
+    </div>
+
+    <!-- MIDDLE PAGE -->
+    <div class="container">
+      <div class="justify-content-center">
+        <div class="m-5 w-100 d-flex flex-wrap">
+          <% if (data.books.length>0){ data.books.forEach(books => { %>
+
+            <div class="col-md-3 m-2 d-flex w-25" onclick="updateBook('<%= books.id %>')" >
+              <div class="card card-body flex-fill p-0">
+                <img class="card-img-top bookIcon h-100 w-100 img-fluid" src="<%= books.icon %>" alt="..." />
+                <div class="card-body p-2">
+                  <h5 class="fw-bolder text-center">
+                    <%= books.name %>
+                  </h5>
+                  <hr />
+                  <div class="text-justify">
+                    <small class="text-secondary">Author:<%= data.author %></small><br />
+                    <small class="text-secondary">Serial Number: <%= books.serialNumber %></small><br />
+                    <small>Date published:<%= new Date(books.datePublished).toLocaleDateString() ; %></small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <% }) }else{ %>
+              <h2>NO BOOK TO DISPLAY</h2>
+              <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Book Modal -->
+  <%- include('../components/create_book.ejs') %>
+
+    <!-- Edit Book Modal -->
+    <%- include('../components/update_book.ejs') %>
+
+      <%- include('../layout/footer') %>
+
+        <script>
+      
+          //  request function 
+          const reqFunction = (method, url, data) => {
+
+
+            axios({
+              method: method,
+              url: url,
+              data: JSON.stringify(data),
+              headers: { "Content-Type": "application/json" },
+            })
+              .then((response) => {
+                console.log(response);
+                if ((response.data.message = "Book Created Successfully")) {
+                  // location.reload();
+                } else {
+                  // login_error.innerHTML = response.data.message;
+                }
+              })
+              .catch((err) => {
+                console.log(err);
+                // console.log(err.response.data.message);
+                // login_error.innerHTML = err.response.data.message;
+              });
+          }
+        </script>
