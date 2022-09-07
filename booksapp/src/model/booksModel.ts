@@ -1,68 +1,16 @@
-const { DataTypes, Model } =  require("sequelize");
-import db from "../config/database.config";
-import { AuthorInstance } from "./authorModel";
+import mongoose from "mongoose";
+const Schema = mongoose.Schema;
 
-interface BookAttribute{
-    id:string;
-    name:string;
-    icon:string;
-    bookSummary:string,
-    bookLink:string,
-    isPublished:boolean;
-    datePublished:string;
-    serialNumber:number;
-    author_Id:string
-}
+const bookSchema = new Schema({
+    name:{type: String, required: true},
+    icon:{type: String, required: true},
+    bookSummary:{type: String, required: true},
+    bookLink:{type: String, required: true},
+    isPublished:{type: Boolean, required: true}, 
+    serialNumber:{type: Number, required: true},
+    author_id:{type:Schema.Types.ObjectId, ref:'Author'},
+    // author:{type:Schema.Types.ObjectId, ref:"Author" }
+},{timestamps: true})
 
-export class BookInstance extends Model<BookAttribute>{}
-
-BookInstance.init({
-    id:{
-      type:DataTypes.UUIDV4,
-      defaultValue: DataTypes.UUIDV4,
-      primaryKey:true,
-      allowNull:false,
-    },
-    name:{
-        type:DataTypes.STRING,
-        allowNull:false
-    },
-    icon:{
-        type:DataTypes.STRING,
-        allowNull:true
-    },
-    bookSummary:{
-        type:DataTypes.TEXT,
-        allowNull:true
-    },
-    bookLink:{
-        type:DataTypes.STRING,
-        allowNull:true
-    },
-    isPublished:{
-        type:DataTypes.BOOLEAN,
-        allowNull:true
-    },
-    datePublished:{
-        type:DataTypes.TIME,
-        defaultValue:new Date().getTime(),
-        allowNull:false
-    },
-    serialNumber:{
-        type:DataTypes.INTEGER,
-        allowNull:false
-    },
-    author_id:{
-        type:DataTypes.UUIDV4, 
-        allowNull:false
-    }
-},{
-    sequelize:db,
-    tableName:'books'
-})
-
-// BookInstance.hasOne(AuthorInstance, {primaryKey:'id', as: 'author'})
-// AuthorInstance.belongsTo(BookInstance, {foreignKey:'author_id', as: 'authors'})
-
-// // BookInstance(AuthorInstance, {foreignKey:'author_id', as: 'books'})
-// AuthorInstance.belongsTo(BookInstance, {foreignKey:'author_id', as: 'authors'})
+const Book = mongoose.model("Book", bookSchema);
+module.exports = Book;

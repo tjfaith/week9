@@ -1,7 +1,7 @@
 
 import express from 'express';
 import {getBooks} from '../controller/booksController'
-import {adminData} from '../controller/authorController'
+import {adminData} from '../controller/authorsController'
 import {verifyToken} from '../middleware/auth'
 
 const router = express.Router();

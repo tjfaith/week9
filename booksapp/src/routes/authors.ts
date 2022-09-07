@@ -1,8 +1,9 @@
 import express from 'express';
-import {createAuthor, getAuthors, getSingleAuthor, updateAuthor, deleteAccount, loginAuthor, logoutAuthor} from '../controller/authorController'
+import {createAuthor, getSingleAuthor, updateAuthor, deleteAccount, loginAuthor, logoutAuthor, getAuthors} from '../controller/authorsController'
 const router = express.Router();
 import {verifyToken} from '../middleware/auth'
 /* GET users listing. */
+router.get('/authors', getAuthors)
 router.get('/logout', logoutAuthor)
 router.get('/', getAuthors)
 router.get('/:id', getSingleAuthor)

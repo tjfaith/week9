@@ -3,12 +3,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteAccount = exports.logoutAuthor = exports.loginAuthor = exports.updateAuthor = exports.createAuthor = exports.adminData = exports.getSingleAuthor = exports.getAuthors = void 0;
+exports.deleteAccount = exports.logoutAuthor = exports.loginAuthor = exports.updateAuthor = exports.createAuthor = exports.adminData = exports.getSingleAuthor = exports.getAuthors = exports.authors = void 0;
 const authorModel_1 = require("../model/authorModel");
 const booksModel_1 = require("../model/booksModel");
 const auth_1 = require("../middleware/auth");
 const utils_1 = require("../middleware/utils");
+const Author = require('../model/author');
 const bcrypt_1 = __importDefault(require("bcrypt"));
+async function authors(req, res, next) {
+    try {
+        const Authors = await Author.find();
+        res.status(200).json(Authors);
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({
+            msg: err + "failed to read",
+            route: '/'
+        });
+        // next(err)
+    }
+}
+exports.authors = authors;
 // GET ALL AUTHORS
 async function getAuthors(req, res, next) {
     try {
@@ -246,7 +262,7 @@ async function deleteAccount(req, res, next) {
         const authorData = await authorModel_1.AuthorInstance.findOne({ where: { id: req.authorId } });
         if (!authorData) {
             return res.status(404).json({
-                message: `Oops! an error ocured`
+                message: `Oops! an error ocurred`
             });
         }
         await authorModel_1.AuthorInstance.destroy({ where: { id: req.authorId } });

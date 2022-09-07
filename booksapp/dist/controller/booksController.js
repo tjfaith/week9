@@ -1,9 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteBook = exports.updateBook = exports.getSingleBook = exports.getBooks = exports.create_books = void 0;
-const booksModel_1 = require("../model/booksModel");
-const authorModel_1 = require("../model/authorModel");
+const BookTable = require('../model/booksModel');
+const AuthorTable = require('../model/authorsModel');
 const utils_1 = require("../middleware/utils");
+// MONGO DB FUNCTION ===============================
 async function create_books(req, res) {
     try {
         const validateResult = utils_1.CreateBooksValidator.validate(req.body, utils_1.options);
@@ -13,50 +14,53 @@ async function create_books(req, res) {
             });
         }
         const author_id = req.authorId;
-        const record = await booksModel_1.BookInstance.create({ ...req.body, author_id });
-        res.status(201).json({ record, message: "Book Created Successfully" });
+        const author = await AuthorTable.findOne({ _id: author_id });
+        if (author) {
+            const newBook = await new BookTable({ ...req.body, author_id }).save();
+            author.books.push(newBook);
+            author.save();
+            res.status(200).json({
+                msg: "Successful",
+                newBook
+            });
+        }
+        // if( author ){
+        //   const record = await BookTable.create({ ...req.body, author_id });
+        //   res.status(201).json({ record, message: "Book Created Successfully" });
+        // }
+        // const author = await AuthorTable.findOneAndUpdate({_id: author_id}, {books: record.record}, {new: true})
+        // const record = await BookTable.create({ ...req.body, author_id });
+        // res.status(201).json({ record, message: "Book Created Successfully" });
     }
     catch (error) {
         res.json({ message: error, status: 500, route: "/create" });
     }
 }
 exports.create_books = create_books;
+// END OF MONGO DB FUNCTION ===============================
 async function getBooks(req, res, next) {
     try {
         const limit = req.query?.limit;
         const offset = req.query?.offset;
-        const record = await booksModel_1.BookInstance.findAndCountAll({
-            limit,
-            offset,
-            attributes: { exclude: ["updatedAt"] },
-            order: [["createdAt", "DESC"]],
-            include: [
-                {
-                    model: authorModel_1.AuthorInstance,
-                    as: 'author',
-                    attributes: ['id', 'author']
-                }
-            ]
-        });
+        const record = await BookTable.find().sort({ 'createdAt': -1 }).skip(offset).limit(limit);
         const isJSONResp = req.headers['postman-token'];
         if (isJSONResp) {
             res.status(200).json({
                 msg: "You have successfully fetch all Books",
-                totalBooks: record.count,
-                data: record.rows
+                data: record
             });
         }
         else {
             res.status(200);
             res.render("index", {
                 title: "Books",
-                totalBooks: record.count,
                 msg: "You have successfully fetch all Books",
-                data: record.rows,
+                data: record,
             });
         }
     }
     catch (error) {
+        console.log(error);
         res.status(500).json({
             msg: "failed to read",
         });
@@ -66,16 +70,7 @@ exports.getBooks = getBooks;
 async function getSingleBook(req, res, next) {
     try {
         const { id } = req.params;
-        const record = await booksModel_1.BookInstance.findOne({
-            where: { id },
-            include: [
-                {
-                    model: authorModel_1.AuthorInstance,
-                    as: 'author',
-                    attributes: ['id', 'author']
-                }
-            ]
-        });
+        const record = await BookTable.findOne({ _id: id });
         if (!record) {
             return res.status(404).json({
                 Error: "book not found",
@@ -103,7 +98,6 @@ async function getSingleBook(req, res, next) {
 exports.getSingleBook = getSingleBook;
 async function updateBook(req, res, next) {
     try {
-        const { id } = req.params;
         const { name, icon, isPublished, bookSummary, serialNumber, bookLink } = req.body;
         const validateResult = utils_1.UpdateBooksValidator.validate(req.body, utils_1.options);
         if (validateResult.error) {
@@ -111,26 +105,19 @@ async function updateBook(req, res, next) {
                 Error: validateResult.error.details[0].message,
             });
         }
-        const record = await booksModel_1.BookInstance.findOne({ where: { id } });
+        const record = await BookTable.findOneAndUpdate({ author_id: req.authorId, _id: req.params.id }, { name, icon, isPublished, bookSummary, serialNumber, bookLink }, { new: true });
         if (!record) {
             return res.status(404).json({
                 Error: "Book not found",
             });
         }
-        const updateRecord = await record.update({
-            name,
-            icon,
-            isPublished,
-            bookSummary,
-            serialNumber,
-            bookLink
-        });
         res.status(200).json({
             message: `successful`,
-            record: updateRecord,
+            record: record,
         });
     }
     catch (error) {
+        console.log(error);
         res.status(500).json({
             msg: "failed to update",
             route: "/",
@@ -141,13 +128,13 @@ exports.updateBook = updateBook;
 async function deleteBook(req, res, next) {
     try {
         const { id } = req.params;
-        const record = await booksModel_1.BookInstance.findOne({ where: { id } });
+        const record = await BookTable.findOne({ _id: id, author_id: req.authorId });
         if (!record) {
             return res.status(404).json({
                 msg: `Book with Id: ${id} not found`,
             });
         }
-        const deletedRecord = await record.destroy();
+        const deletedRecord = await record.deleteOne({ _id: id });
         return res.status(200).json({
             message: `successful`,
             deletedRecord,

@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthorInstance = void 0;
 const { DataTypes, Model } = require("sequelize");
 const database_config_1 = __importDefault(require("../config/database.config"));
-const booksModel_1 = require("../model/booksModel");
+const booksModel2_1 = require("../model/booksModel2");
 class AuthorInstance extends Model {
 }
 exports.AuthorInstance = AuthorInstance;
@@ -59,5 +59,5 @@ AuthorInstance.init({
     sequelize: database_config_1.default,
     tableName: 'authors'
 });
-AuthorInstance.hasMany(booksModel_1.BookInstance, { foreignKey: 'author_id', as: 'books' });
-booksModel_1.BookInstance.belongsTo(AuthorInstance, { foreignKey: 'author_id', as: 'author' });
+AuthorInstance.hasMany(booksModel2_1.BookInstance, { foreignKey: 'author_id', as: 'books' });
+booksModel2_1.BookInstance.belongsTo(AuthorInstance, { foreignKey: 'author_id', as: 'author' });
